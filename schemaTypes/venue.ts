@@ -60,7 +60,7 @@ export default defineType({
       },
     }),
     defineField({
-      name: 'heroImage',
+      name: 'hero_image',
       title: 'Hero image',
       type: 'image',
       group: 'overview',
@@ -344,7 +344,7 @@ export default defineType({
   preview: {
     select: {
       title: 'name',
-      media: 'heroImage',
+      media: 'hero_image',
       suburb: 'address.suburb.title',
     },
     prepare({title, media, suburb}) {
