@@ -1,41 +1,187 @@
 import {defineField, defineType} from 'sanity'
 
+/**
+ * Field names for site-facing data match landing-page GROQ in
+ * `src/services/venues.ts` (phone, website, lat/lng, SA utility flags,
+ * claim_status, upcoming_screenings, is_verified, rating, etc.).
+ *
+ * Watch = broadcasts (sports shown on screens).
+ * Play = sports (sports visitors can play at the venue).
+ */
 export default defineType({
   name: 'venue',
   title: 'Venue',
   type: 'document',
+  groups: [
+    {name: 'overview', title: 'Overview', default: true},
+    {name: 'watchPlay', title: 'Watch & Play'},
+    {name: 'amenities', title: 'Amenities'},
+    {name: 'location', title: 'Location'},
+    {name: 'listing', title: 'Listing'},
+    {name: 'seo', title: 'SEO'},
+  ],
+  fieldsets: [
+    {
+      name: 'contact',
+      title: 'Contact',
+      options: {columns: 2},
+    },
+    {
+      name: 'coordinates',
+      title: 'Map coordinates',
+      options: {columns: 2},
+    },
+    {
+      name: 'amenityFlags',
+      title: 'Amenities / SA utility flags',
+      options: {columns: 2},
+    },
+    {
+      name: 'claim',
+      title: 'Claim & verification',
+      options: {columns: 2},
+    },
+  ],
   fields: [
     defineField({
       name: 'name',
       title: 'Name',
       type: 'string',
+      group: 'overview',
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+      group: 'overview',
       options: {
         source: 'name',
         maxLength: 96,
       },
     }),
     defineField({
-      name: 'isVerified',
-      title: 'Verified Hub',
+      name: 'heroImage',
+      title: 'Hero image',
+      type: 'image',
+      group: 'overview',
+      description: 'Primary photo for the venue page and directory cards.',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'blockContent',
+      group: 'overview',
+    }),
+    defineField({
+      name: 'phone',
+      title: 'Phone',
+      type: 'string',
+      group: 'overview',
+      fieldset: 'contact',
+      description: 'Public phone. The site uses this for WhatsApp enquire/book links.',
+    }),
+    defineField({
+      name: 'website',
+      title: 'Website',
+      type: 'url',
+      group: 'overview',
+      fieldset: 'contact',
+    }),
+    defineField({
+      name: 'contactInfo',
+      title: 'Additional contact',
+      type: 'object',
+      group: 'overview',
+      description:
+        'Optional extras. The website reads top-level Phone and Website, not these nested fields.',
+      fields: [
+        defineField({name: 'phone', title: 'Phone Number', type: 'string'}),
+        defineField({name: 'email', title: 'Email', type: 'string'}),
+        defineField({name: 'whatsapp', title: 'WhatsApp Number', type: 'string'}),
+      ],
+    }),
+    defineField({
+      name: 'broadcasts',
+      title: 'Watch (broadcasts)',
+      type: 'array',
+      group: 'watchPlay',
+      description:
+        'Watch = sports this venue shows on screens (broadcasts). These appear as Watch on the site.',
+      of: [{type: 'reference', to: {type: 'sport'}}],
+    }),
+    defineField({
+      name: 'sports',
+      title: 'Play (sports)',
+      type: 'array',
+      group: 'watchPlay',
+      description:
+        'Play = sports visitors can play at this venue. These appear as Play on the site.',
+      of: [{type: 'reference', to: {type: 'sport'}}],
+    }),
+    defineField({
+      name: 'has_generator_backup',
+      title: 'Generator / inverter backup',
       type: 'boolean',
+      group: 'amenities',
+      fieldset: 'amenityFlags',
       initialValue: false,
     }),
     defineField({
-      name: 'crowdLevel',
-      title: 'Crowd Level (%)',
-      type: 'number',
-      validation: (Rule) => Rule.min(0).max(100),
+      name: 'has_big_screens',
+      title: 'HD big screens',
+      type: 'boolean',
+      group: 'amenities',
+      fieldset: 'amenityFlags',
+      initialValue: false,
     }),
-    // ADDED: Contact details for your WhatsApp/Call bridges
+    defineField({
+      name: 'has_live_audio',
+      title: 'Live commentary on',
+      type: 'boolean',
+      group: 'amenities',
+      fieldset: 'amenityFlags',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'has_craft_drafts',
+      title: 'Draft beer',
+      type: 'boolean',
+      group: 'amenities',
+      fieldset: 'amenityFlags',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'has_food_menu',
+      title: 'Food menu',
+      type: 'boolean',
+      group: 'amenities',
+      fieldset: 'amenityFlags',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'has_outdoor_area',
+      title: 'Outdoor area',
+      type: 'boolean',
+      group: 'amenities',
+      fieldset: 'amenityFlags',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'has_parking',
+      title: 'On-site parking',
+      type: 'boolean',
+      group: 'amenities',
+      fieldset: 'amenityFlags',
+      initialValue: false,
+    }),
     defineField({
       name: 'address',
       title: 'Address',
       type: 'object',
+      group: 'location',
       fields: [
         defineField({name: 'street', title: 'Street', type: 'string'}),
         defineField({
@@ -56,30 +202,130 @@ export default defineType({
       ],
     }),
     defineField({
-      name: 'contactInfo',
-      title: 'Contact Details',
-      type: 'object',
-      fields: [
-        defineField({name: 'phone', title: 'Phone Number', type: 'string'}),
-        defineField({name: 'email', title: 'Email', type: 'string'}),
-        defineField({name: 'whatsapp', title: 'WhatsApp Number', type: 'string'}),
-      ],
+      name: 'latitude',
+      title: 'Latitude',
+      type: 'number',
+      group: 'location',
+      fieldset: 'coordinates',
+      description: 'Decimal degrees, e.g. -26.2041 for Johannesburg.',
+      validation: (Rule) => Rule.min(-90).max(90),
     }),
     defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'blockContent',
+      name: 'longitude',
+      title: 'Longitude',
+      type: 'number',
+      group: 'location',
+      fieldset: 'coordinates',
+      description: 'Decimal degrees, e.g. 28.0473 for Johannesburg.',
+      validation: (Rule) => Rule.min(-180).max(180),
     }),
     defineField({
       name: 'location',
       title: 'Location',
       type: 'reference',
+      group: 'location',
       to: [{type: 'location'}],
+    }),
+    defineField({
+      name: 'is_verified',
+      title: 'Verified listing',
+      type: 'boolean',
+      group: 'listing',
+      fieldset: 'claim',
+      description: 'Site field `is_verified`. Verified hubs skip the claim bar.',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'claim_status',
+      title: 'Claim status',
+      type: 'string',
+      group: 'listing',
+      fieldset: 'claim',
+      options: {
+        list: [
+          {title: 'Unclaimed', value: 'unclaimed'},
+          {title: 'Claim pending', value: 'claim_pending'},
+          {title: 'Claimed', value: 'claimed'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'unclaimed',
+    }),
+    defineField({
+      name: 'isVerified',
+      title: 'Verified Hub (legacy)',
+      type: 'boolean',
+      group: 'listing',
+      hidden: true,
+      initialValue: false,
+      description: 'Legacy camelCase field. The site reads `is_verified`.',
+    }),
+    defineField({
+      name: 'rating',
+      title: 'Rating',
+      type: 'number',
+      group: 'listing',
+      description: 'Optional public rating (0–5) shown on the venue page.',
+      validation: (Rule) => Rule.min(0).max(5),
+    }),
+    defineField({
+      name: 'crowdLevel',
+      title: 'Crowd Level (%)',
+      type: 'number',
+      group: 'listing',
+      validation: (Rule) => Rule.min(0).max(100),
+    }),
+    defineField({
+      name: 'upcoming_screenings',
+      title: 'Upcoming screenings',
+      type: 'array',
+      group: 'listing',
+      description: 'Watch fixtures this venue is showing. Field names match site GROQ.',
+      of: [
+        {
+          type: 'object',
+          name: 'screening',
+          title: 'Screening',
+          fields: [
+            defineField({
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'startsAt',
+              title: 'Starts at',
+              type: 'datetime',
+              description: 'ISO datetime. The site also accepts a free-form display string.',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'setupTags',
+              title: 'Setup tags',
+              type: 'array',
+              of: [{type: 'string'}],
+              options: {layout: 'tags'},
+              description: 'e.g. Big screen, Sound on, Outdoor',
+            }),
+          ],
+          preview: {
+            select: {title: 'title', startsAt: 'startsAt'},
+            prepare({title, startsAt}) {
+              return {
+                title: title || 'Screening',
+                subtitle: startsAt,
+              }
+            },
+          },
+        },
+      ],
     }),
     defineField({
       name: 'metadata',
       title: 'Metadata',
       type: 'object',
+      group: 'seo',
       fields: [
         defineField({name: 'description', title: 'Description', type: 'text', rows: 3}),
         defineField({name: 'keywords', title: 'Keywords', type: 'array', of: [{type: 'string'}]}),
@@ -94,17 +340,19 @@ export default defineType({
         defineField({name: 'ogSiteName', title: 'OG Site Name', type: 'string'}),
       ],
     }),
-    defineField({
-      name: 'broadcasts',
-      title: 'Broadcasts',
-      type: 'array',
-      of: [{type: 'reference', to: {type: 'sport'}}],
-    }),
-    defineField({
-      name: 'sports',
-      title: 'Sports',
-      type: 'array',
-      of: [{type: 'reference', to: {type: 'sport'}}],
-    }),
   ],
+  preview: {
+    select: {
+      title: 'name',
+      media: 'heroImage',
+      suburb: 'address.suburb.title',
+    },
+    prepare({title, media, suburb}) {
+      return {
+        title: title || 'Untitled venue',
+        subtitle: suburb,
+        media,
+      }
+    },
+  },
 })
