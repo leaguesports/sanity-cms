@@ -2,8 +2,8 @@ import {defineField, defineType} from 'sanity'
 
 /**
  * Field names for site-facing data match landing-page GROQ in
- * `src/services/venues.ts` (phone, website, lat/lng, SA utility flags,
- * claim_status, upcoming_screenings, is_verified, rating, etc.).
+ * `src/services/venueQuery.ts` (hero_image, phone, whatsapp, website, lat/lng,
+ * amenities, claim_status, upcoming_screenings, is_verified, rating, etc.).
  *
  * Watch = broadcasts (sports shown on screens).
  * Play = sports (sports visitors can play at the venue).
@@ -33,7 +33,7 @@ export default defineType({
     },
     {
       name: 'amenityFlags',
-      title: 'Amenities / SA utility flags',
+      title: 'Amenities',
       options: {columns: 2},
     },
     {
@@ -81,7 +81,16 @@ export default defineType({
       type: 'string',
       group: 'overview',
       fieldset: 'contact',
-      description: 'Public phone. The site uses this for WhatsApp enquire/book links.',
+      description:
+        'Public phone. The site prefers WhatsApp for enquire/book CTAs when that is set.',
+    }),
+    defineField({
+      name: 'whatsapp',
+      title: 'WhatsApp',
+      type: 'string',
+      group: 'overview',
+      fieldset: 'contact',
+      description: 'Preferred for enquire/book CTAs. GROQ also reads nested contactInfo.whatsapp.',
     }),
     defineField({
       name: 'website',
@@ -96,7 +105,7 @@ export default defineType({
       type: 'object',
       group: 'overview',
       description:
-        'Optional extras. The website reads top-level Phone and Website, not these nested fields.',
+        'GROQ still reads contactInfo.phone and contactInfo.whatsapp. Prefer the Contact fields above for new venues; WhatsApp is used for CTAs when set.',
       fields: [
         defineField({name: 'phone', title: 'Phone Number', type: 'string'}),
         defineField({name: 'email', title: 'Email', type: 'string'}),
@@ -207,8 +216,17 @@ export default defineType({
       type: 'number',
       group: 'location',
       fieldset: 'coordinates',
-      description: 'Decimal degrees, e.g. -26.2041 for Johannesburg.',
-      validation: (Rule) => Rule.min(-90).max(90),
+      description: 'Decimal degrees, e.g. -26.2041 for Johannesburg. Set together with longitude.',
+      validation: (Rule) =>
+        Rule.min(-90)
+          .max(90)
+          .custom((lat, context) => {
+            const lng = (context.document as {longitude?: number} | undefined)?.longitude
+            const hasLat = typeof lat === 'number'
+            const hasLng = typeof lng === 'number'
+            if (hasLat === hasLng) return true
+            return 'Latitude and longitude must both be set'
+          }),
     }),
     defineField({
       name: 'longitude',
@@ -216,8 +234,17 @@ export default defineType({
       type: 'number',
       group: 'location',
       fieldset: 'coordinates',
-      description: 'Decimal degrees, e.g. 28.0473 for Johannesburg.',
-      validation: (Rule) => Rule.min(-180).max(180),
+      description: 'Decimal degrees, e.g. 28.0473 for Johannesburg. Set together with latitude.',
+      validation: (Rule) =>
+        Rule.min(-180)
+          .max(180)
+          .custom((lng, context) => {
+            const lat = (context.document as {latitude?: number} | undefined)?.latitude
+            const hasLat = typeof lat === 'number'
+            const hasLng = typeof lng === 'number'
+            if (hasLat === hasLng) return true
+            return 'Latitude and longitude must both be set'
+          }),
     }),
     defineField({
       name: 'location',
@@ -232,8 +259,8 @@ export default defineType({
       type: 'boolean',
       group: 'listing',
       fieldset: 'claim',
-      description: 'Site field `is_verified`. Verified hubs skip the claim bar.',
-      initialValue: false,
+      description:
+        'Leave unset unless you are changing verification. Do not default to false — that would overwrite legacy `isVerified` true. The site will use select(defined(is_verified) => is_verified, isVerified).',
     }),
     defineField({
       name: 'claim_status',
@@ -250,6 +277,13 @@ export default defineType({
         layout: 'radio',
       },
       initialValue: 'unclaimed',
+      // StringRule types omit valid(); runtime Rule supports it.
+      validation: (Rule) =>
+        (Rule as unknown as {valid: (values: string[]) => typeof Rule}).valid([
+          'unclaimed',
+          'claim_pending',
+          'claimed',
+        ]),
     }),
     defineField({
       name: 'isVerified',
@@ -257,8 +291,8 @@ export default defineType({
       type: 'boolean',
       group: 'listing',
       hidden: true,
-      initialValue: false,
-      description: 'Legacy camelCase field. The site reads `is_verified`.',
+      description:
+        'Legacy camelCase field. No initialValue so Studio does not write a dead false over existing true. The site will use select(defined(is_verified) => is_verified, isVerified).',
     }),
     defineField({
       name: 'rating',
