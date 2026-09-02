@@ -4,7 +4,7 @@ Content Studio for [leaguesports.co.za](https://leaguesports.co.za). Schema in t
 
 ## Desk
 
-The sidebar highlights **Guides** as a first-class document list so Content can open and edit Guide docs immediately. Venue, Location, Sport, Series, and Event remain in the same sidebar.
+The sidebar includes an explicit **Guides** document list (the `guide` type was already in schema). Venue, Location, Sport, Series, and Event remain in the same sidebar.
 
 ## Local development
 
@@ -13,9 +13,9 @@ yarn
 yarn dev
 ```
 
-## Redeploy Studio (after merge)
+## Deploy Studio
 
-Schema and desk-structure changes only appear in hosted Studio after a Studio deploy. After this PR is merged:
+Desk-structure and validation changes appear in hosted Studio after a Studio deploy. This is not urgent — `guide` is already in the deployed schema. When you want the new desk list and publish rules live:
 
 ```bash
 yarn deploy

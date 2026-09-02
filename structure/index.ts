@@ -3,8 +3,8 @@ import type {StructureResolver} from 'sanity/structure'
 const HIGHLIGHTED_TYPES = ['guide']
 
 /**
- * First-class Guides list so Content can open and edit Guide docs immediately.
- * Remaining document types stay reachable via the default type lists.
+ * Explicit Guides list for Studio UI. The `guide` type is already in schema;
+ * this only highlights it in the desk. Other types stay on the default lists.
  */
 export const structure: StructureResolver = (S) =>
   S.list()
