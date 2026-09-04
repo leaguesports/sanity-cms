@@ -9,6 +9,7 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -18,6 +19,8 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
+      description: 'Used in the public URL: leaguesports.co.za/guides/[slug]',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'mainImage',
@@ -26,6 +29,8 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      description: 'Hero image for the guide page. Required before publish.',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
@@ -45,4 +50,18 @@ export default defineType({
       type: 'blockContent',
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+      media: 'mainImage',
+      slug: 'slug.current',
+    },
+    prepare({title, media, slug}) {
+      return {
+        title: title || 'Untitled guide',
+        subtitle: slug ? `/guides/${slug}` : 'Missing slug',
+        media,
+      }
+    },
+  },
 })

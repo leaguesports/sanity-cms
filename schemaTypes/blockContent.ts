@@ -46,11 +46,15 @@ export default defineType({
             name: 'link',
             type: 'object',
             fields: [
-              {
+              defineField({
                 title: 'URL',
                 name: 'href',
                 type: 'url',
-              },
+                validation: (Rule) =>
+                  Rule.uri({
+                    scheme: ['http', 'https'],
+                  }),
+              }),
             ],
           },
         ],
