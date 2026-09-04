@@ -131,6 +131,171 @@ export default defineType({
       of: [{type: 'reference', to: {type: 'sport'}}],
     }),
     defineField({
+      name: 'golfCourse',
+      title: 'Golf course scorecard',
+      type: 'object',
+      group: 'watchPlay',
+      description:
+        'Hole-by-hole scorecard for live golf rounds. Only venues with this filled can start a round on the site.',
+      fields: [
+        defineField({
+          name: 'courseName',
+          title: 'Course name',
+          type: 'string',
+          description: 'Optional when the venue has multiple layouts (e.g. East / West).',
+        }),
+        defineField({
+          name: 'holesTotal',
+          title: 'Holes',
+          type: 'number',
+          initialValue: 18,
+          validation: (Rule) => Rule.min(9).max(18),
+        }),
+        defineField({
+          name: 'parTotal',
+          title: 'Total par',
+          type: 'number',
+          validation: (Rule) => Rule.min(27).max(80),
+        }),
+        defineField({
+          name: 'notes',
+          title: 'Notes',
+          type: 'text',
+          rows: 2,
+          description: 'e.g. Scorecard source year, temporary greens, layout caveats.',
+        }),
+        defineField({
+          name: 'tees',
+          title: 'Tee boxes',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              name: 'tee',
+              title: 'Tee',
+              fields: [
+                defineField({
+                  name: 'name',
+                  title: 'Name',
+                  type: 'string',
+                  validation: (Rule) => Rule.required(),
+                }),
+                defineField({
+                  name: 'color',
+                  title: 'Color',
+                  type: 'string',
+                  description: 'e.g. White, Blue, Championship',
+                }),
+                defineField({
+                  name: 'courseRating',
+                  title: 'Course rating',
+                  type: 'number',
+                }),
+                defineField({
+                  name: 'slope',
+                  title: 'Slope',
+                  type: 'number',
+                  validation: (Rule) => Rule.min(55).max(155),
+                }),
+                defineField({
+                  name: 'totalMeters',
+                  title: 'Total length (m)',
+                  type: 'number',
+                }),
+              ],
+              preview: {
+                select: {title: 'name', color: 'color', slope: 'slope'},
+                prepare({title, color, slope}) {
+                  return {
+                    title: title || 'Tee',
+                    subtitle: [color, slope ? `Slope ${slope}` : null]
+                      .filter(Boolean)
+                      .join(' · '),
+                  }
+                },
+              },
+            },
+          ],
+        }),
+        defineField({
+          name: 'holes',
+          title: 'Holes',
+          type: 'array',
+          validation: (Rule) => Rule.min(9).max(18),
+          of: [
+            {
+              type: 'object',
+              name: 'hole',
+              title: 'Hole',
+              fields: [
+                defineField({
+                  name: 'number',
+                  title: 'Hole number',
+                  type: 'number',
+                  validation: (Rule) => Rule.required().min(1).max(18),
+                }),
+                defineField({
+                  name: 'par',
+                  title: 'Par',
+                  type: 'number',
+                  validation: (Rule) => Rule.required().min(3).max(5),
+                }),
+                defineField({
+                  name: 'strokeIndex',
+                  title: 'Stroke index',
+                  type: 'number',
+                  validation: (Rule) => Rule.required().min(1).max(18),
+                }),
+                defineField({
+                  name: 'distances',
+                  title: 'Distances by tee (meters)',
+                  type: 'array',
+                  of: [
+                    {
+                      type: 'object',
+                      name: 'teeDistance',
+                      fields: [
+                        defineField({
+                          name: 'teeName',
+                          title: 'Tee name',
+                          type: 'string',
+                          validation: (Rule) => Rule.required(),
+                        }),
+                        defineField({
+                          name: 'meters',
+                          title: 'Meters',
+                          type: 'number',
+                          validation: (Rule) => Rule.required().min(50).max(700),
+                        }),
+                      ],
+                      preview: {
+                        select: {title: 'teeName', meters: 'meters'},
+                        prepare({title, meters}) {
+                          return {
+                            title: title || 'Tee',
+                            subtitle: meters ? `${meters} m` : undefined,
+                          }
+                        },
+                      },
+                    },
+                  ],
+                }),
+              ],
+              preview: {
+                select: {number: 'number', par: 'par', strokeIndex: 'strokeIndex'},
+                prepare({number, par, strokeIndex}) {
+                  return {
+                    title: `Hole ${number ?? '?'}`,
+                    subtitle: `Par ${par ?? '?'} · SI ${strokeIndex ?? '?'}`,
+                  }
+                },
+              },
+            },
+          ],
+        }),
+      ],
+    }),
+    defineField({
       name: 'has_generator_backup',
       title: 'Generator / inverter backup',
       type: 'boolean',
