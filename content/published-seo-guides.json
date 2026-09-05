@@ -1,0 +1,78 @@
+{
+  "publishedAt": "2026-09-05",
+  "notes": "High-value SEO guides and Cape Town Watch venue seed published via Sanity MCP per seo-guides plan.",
+  "guides": [
+    {
+      "slug": "best-golf-courses-johannesburg",
+      "title": "Best Golf Courses & Clubs in Johannesburg",
+      "url": "https://leaguesports.co.za/guides/best-golf-courses-johannesburg",
+      "priority": 1
+    },
+    {
+      "slug": "where-to-watch-rugby-johannesburg",
+      "title": "Where to Watch Rugby & the Springboks in Johannesburg",
+      "url": "https://leaguesports.co.za/guides/where-to-watch-rugby-johannesburg",
+      "priority": 2
+    },
+    {
+      "slug": "where-to-watch-cricket-johannesburg",
+      "title": "Where to Watch Cricket & the Proteas in Johannesburg",
+      "url": "https://leaguesports.co.za/guides/where-to-watch-cricket-johannesburg",
+      "priority": 3
+    },
+    {
+      "slug": "best-karting-johannesburg",
+      "title": "Best Go-Karting Tracks in Johannesburg",
+      "url": "https://leaguesports.co.za/guides/best-karting-johannesburg",
+      "priority": 4
+    },
+    {
+      "slug": "where-to-watch-f1-johannesburg",
+      "title": "Where to Watch F1 & Motorsport in Johannesburg",
+      "url": "https://leaguesports.co.za/guides/where-to-watch-f1-johannesburg",
+      "priority": 5
+    },
+    {
+      "slug": "best-tennis-clubs-johannesburg",
+      "title": "Best Tennis Clubs in Johannesburg",
+      "url": "https://leaguesports.co.za/guides/best-tennis-clubs-johannesburg",
+      "priority": 6
+    },
+    {
+      "slug": "best-sports-bars-cape-town",
+      "title": "Best Sports Bars in Cape Town",
+      "url": "https://leaguesports.co.za/guides/best-sports-bars-cape-town",
+      "priority": 7,
+      "dependsOn": "Cape Town Watch venue seed"
+    },
+    {
+      "slug": "how-to-find-padel-four-ball",
+      "title": "How to Find a Padel Four-Ball Near You",
+      "url": "https://leaguesports.co.za/guides/how-to-find-padel-four-ball",
+      "type": "product-aeo"
+    },
+    {
+      "slug": "claim-your-venue-leaguesports",
+      "title": "Claim Your Venue on LeagueSports",
+      "url": "https://leaguesports.co.za/guides/claim-your-venue-leaguesports",
+      "type": "product-aeo"
+    },
+    {
+      "slug": "track-padel-golf-scores",
+      "title": "Track Padel or Golf Scores on LeagueSports",
+      "url": "https://leaguesports.co.za/guides/track-padel-golf-scores",
+      "type": "product-aeo"
+    }
+  ],
+  "capeTownWatchVenuesSeeded": [
+    "hogshead-claremont",
+    "tigers-milk-canal-walk",
+    "news-cafe-green-point",
+    "mitchells-scottish-ale-house",
+    "barristers-grill-claremont",
+    "dunes-three-anchor-bay",
+    "dros-willowbridge",
+    "woodstock-arms",
+    "tigers-milk-table-view"
+  ]
+}
