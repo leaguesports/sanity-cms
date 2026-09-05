@@ -2,20 +2,10 @@ import {defineArrayMember, defineField, defineType} from 'sanity'
 
 const F1_SERIES = 'f1'
 
-const RUGBY_SERIES = ['six-nations', 'rugby', 'united-rugby-championship']
-const SOCCER_SERIES = ['soccer', 'premier-soccer-league']
 const CRICKET_SERIES = ['cricket', 'sa20']
 
 function isF1Series(series: unknown): boolean {
   return series === F1_SERIES
-}
-
-function isRugbySeries(series: unknown): boolean {
-  return typeof series === 'string' && RUGBY_SERIES.includes(series)
-}
-
-function isSoccerSeries(series: unknown): boolean {
-  return typeof series === 'string' && SOCCER_SERIES.includes(series)
 }
 
 function isCricketSeries(series: unknown): boolean {
@@ -135,63 +125,11 @@ export default defineType({
       hidden: ({parent}) => isF1Series(parent?.series),
     }),
     defineField({
-      name: 'rugbyDetails',
-      title: 'Rugby details',
-      type: 'object',
-      hidden: ({parent}) => !isRugbySeries(parent?.series),
-      fields: [
-        defineField({
-          name: 'stadium',
-          title: 'Stadium',
-          type: 'string',
-          description: 'Optional override when the rugby ground differs from Stadium / ground above.',
-        }),
-        defineField({
-          name: 'kickoffConfirmed',
-          title: 'Kickoff confirmed',
-          type: 'boolean',
-          initialValue: false,
-        }),
-      ],
-    }),
-    defineField({
-      name: 'soccerDetails',
-      title: 'Soccer details',
-      type: 'object',
-      hidden: ({parent}) => !isSoccerSeries(parent?.series),
-      fields: [
-        defineField({
-          name: 'stadium',
-          title: 'Stadium',
-          type: 'string',
-          description: 'Optional override when the soccer stadium differs from Stadium / ground above.',
-        }),
-        defineField({
-          name: 'kickoffConfirmed',
-          title: 'Kickoff confirmed',
-          type: 'boolean',
-          initialValue: false,
-        }),
-      ],
-    }),
-    defineField({
       name: 'cricketDetails',
       title: 'Cricket details',
       type: 'object',
       hidden: ({parent}) => !isCricketSeries(parent?.series),
       fields: [
-        defineField({
-          name: 'ground',
-          title: 'Ground',
-          type: 'string',
-          description: 'Optional override when the cricket ground differs from Stadium / ground above.',
-        }),
-        defineField({
-          name: 'kickoffConfirmed',
-          title: 'Kickoff confirmed',
-          type: 'boolean',
-          initialValue: false,
-        }),
         defineField({
           name: 'format',
           title: 'Format',
