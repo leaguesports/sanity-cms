@@ -1,0 +1,181 @@
+{
+  "publishedAt": "2026-09-06",
+  "notes": "Demo fixtures for event sport fields + featured flag (landing-page#75 / sanity-cms PR#4). Published to production via Sanity MCP. Studio editors need the event schema from cursor/event-sport-fields-featured-75 to see the new fields in the form UI; Content Lake already stores them. Landing EVENTS_CMS_QUERY must coalesce(startsAt, f1Details.dateTime) before /events surfaces non-F1 docs.",
+  "dependsOnSchema": "cursor/event-sport-fields-featured-75",
+  "teams": [
+    {
+      "id": "team-springboks",
+      "name": "Springboks",
+      "slug": "springboks"
+    },
+    {
+      "id": "team-all-blacks",
+      "name": "All Blacks",
+      "slug": "all-blacks"
+    },
+    {
+      "id": "team-kaizer-chiefs",
+      "name": "Kaizer Chiefs",
+      "slug": "kaizer-chiefs"
+    },
+    {
+      "id": "team-orlando-pirates",
+      "name": "Orlando Pirates",
+      "slug": "orlando-pirates"
+    },
+    {
+      "id": "team-proteas",
+      "name": "South Africa",
+      "slug": "south-africa-cricket"
+    },
+    {
+      "id": "team-india-cricket",
+      "name": "India",
+      "slug": "india-cricket"
+    },
+    {
+      "id": "team-mi-cape-town",
+      "name": "MI Cape Town",
+      "slug": "mi-cape-town"
+    },
+    {
+      "id": "team-joburg-super-kings",
+      "name": "Joburg Super Kings",
+      "slug": "joburg-super-kings"
+    },
+    {
+      "id": "team-ireland",
+      "name": "Ireland",
+      "slug": "ireland"
+    },
+    {
+      "id": "team-england",
+      "name": "England",
+      "slug": "england"
+    }
+  ],
+  "teamSlugPatches": [
+    {
+      "id": "0fb90998-3605-4aa2-9415-1681af15dbd1",
+      "name": "Lions",
+      "slug": "lions"
+    },
+    {
+      "id": "99e8d2a7-1881-450a-bade-77b4f68239af",
+      "name": "Sharks",
+      "slug": "sharks"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-springboks-all-blacks-2026",
+      "slug": "springboks-vs-all-blacks-2026",
+      "title": "Springboks vs All Blacks",
+      "series": "rugby",
+      "competition": "The Rugby Championship",
+      "startsAt": "2026-09-13T15:00:00Z",
+      "featured": true,
+      "stadium": "Ellis Park Stadium",
+      "kickoffConfirmed": true,
+      "homeTeam": "springboks",
+      "awayTeam": "all-blacks",
+      "covers": ["startsAt", "featured", "homeTeam", "awayTeam", "competition", "stadium"]
+    },
+    {
+      "id": "event-soweto-derby-2026",
+      "slug": "kaizer-chiefs-vs-orlando-pirates-2026",
+      "title": "Kaizer Chiefs vs Orlando Pirates",
+      "series": "premier-soccer-league",
+      "competition": "Betway Premiership",
+      "startsAt": "2026-09-14T13:30:00Z",
+      "featured": true,
+      "stadium": "FNB Stadium",
+      "kickoffConfirmed": true,
+      "homeTeam": "kaizer-chiefs",
+      "awayTeam": "orlando-pirates",
+      "covers": ["premier-soccer-league", "featured"]
+    },
+    {
+      "id": "event-stormers-bulls-urc-2026",
+      "slug": "stormers-vs-bulls-urc-2026",
+      "title": "Stormers vs Bulls",
+      "series": "united-rugby-championship",
+      "competition": "United Rugby Championship",
+      "startsAt": "2026-09-20T14:00:00Z",
+      "featured": false,
+      "stadium": "DHL Stadium",
+      "kickoffConfirmed": true,
+      "homeTeam": "stormers",
+      "awayTeam": "bulls",
+      "covers": ["united-rugby-championship", "existing team refs"]
+    },
+    {
+      "id": "event-sharks-lions-urc-2026",
+      "slug": "sharks-vs-lions-urc-2026",
+      "title": "Sharks vs Lions",
+      "series": "united-rugby-championship",
+      "competition": "United Rugby Championship",
+      "startsAt": "2026-09-27T13:00:00Z",
+      "featured": false,
+      "stadium": "Hollywoodbets Kings Park",
+      "kickoffConfirmed": false,
+      "homeTeam": "sharks",
+      "awayTeam": "lions",
+      "covers": ["kickoffConfirmed=false TBC"]
+    },
+    {
+      "id": "event-proteas-india-odi-2026",
+      "slug": "proteas-vs-india-odi-2026",
+      "title": "Proteas vs India (ODI)",
+      "series": "cricket",
+      "competition": "Bilateral ODI series",
+      "startsAt": "2026-10-05T09:00:00Z",
+      "featured": false,
+      "stadium": "Newlands",
+      "kickoffConfirmed": true,
+      "homeTeam": "south-africa-cricket",
+      "awayTeam": "india-cricket",
+      "cricketFormat": "odi",
+      "covers": ["cricketDetails.format"]
+    },
+    {
+      "id": "event-mi-cape-town-jsk-sa20-2027",
+      "slug": "mi-cape-town-vs-joburg-super-kings-2027",
+      "title": "MI Cape Town vs Joburg Super Kings",
+      "series": "sa20",
+      "competition": "SA20",
+      "startsAt": "2027-01-15T16:00:00Z",
+      "featured": true,
+      "stadium": "Newlands",
+      "kickoffConfirmed": true,
+      "homeTeam": "mi-cape-town",
+      "awayTeam": "joburg-super-kings",
+      "cricketFormat": "t20",
+      "covers": ["sa20", "featured", "t20"]
+    },
+    {
+      "id": "event-ireland-england-six-nations-2027",
+      "slug": "ireland-vs-england-six-nations-2027",
+      "title": "Ireland vs England",
+      "series": "six-nations",
+      "competition": "Six Nations",
+      "startsAt": "2027-02-07T15:00:00Z",
+      "featured": false,
+      "stadium": "Aviva Stadium",
+      "kickoffConfirmed": true,
+      "homeTeam": "ireland",
+      "awayTeam": "england",
+      "covers": ["legacy six-nations + shared fields"]
+    }
+  ],
+  "f1Patches": [
+    {
+      "id": "f1-2026-italian-grand-prix",
+      "slug": "italian-grand-prix",
+      "featured": true,
+      "summary": "Monza lights-out — featured race weekend for the motorsport hero.",
+      "covers": ["featured on existing F1 doc without startsAt"]
+    }
+  ],
+  "visionQuery": "*[\n  _type == \"event\" &&\n  defined(coalesce(startsAt, f1Details.dateTime)) &&\n  coalesce(startsAt, f1Details.dateTime) >= \"2026-09-06T00:00:00Z\"\n] | order(coalesce(startsAt, f1Details.dateTime) asc) {\n  title,\n  series,\n  featured,\n  \"dateTime\": coalesce(startsAt, f1Details.dateTime),\n  \"homeTeam\": homeTeam->name,\n  \"awayTeam\": awayTeam->name,\n  \"cricketFormat\": cricketDetails.format\n}"
+}
