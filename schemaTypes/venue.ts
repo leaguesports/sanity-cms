@@ -1,12 +1,16 @@
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
 
 /**
  * Field names for site-facing data match landing-page GROQ in
  * `src/services/venueQuery.ts` (hero_image, phone, whatsapp, website, lat/lng,
- * amenities, claim_status, upcoming_screenings, is_verified, rating, etc.).
+ * amenities, claim_status, claim_request, claimedByUserId, upcoming_screenings,
+ * is_verified, rating, etc.).
  *
  * Watch = broadcasts (sports shown on screens).
  * Play = sports (sports visitors can play at the venue).
+ *
+ * Screening inventory lives on this document (`upcoming_screenings`). Listing
+ * owner identity is `claimedByUserId` (Railway `/api/auth/me` user id).
  */
 export default defineType({
   name: 'venue',
@@ -451,6 +455,51 @@ export default defineType({
         ]),
     }),
     defineField({
+      name: 'claimedByUserId',
+      title: 'Claimed by user id',
+      type: 'string',
+      group: 'listing',
+      fieldset: 'claim',
+      description:
+        'Railway `/api/auth/me` user id of the listing owner. Landing uses this to authorize the screening editor. Ops should set this when approving a claim.',
+    }),
+    defineField({
+      name: 'claim_request',
+      title: 'Claim request',
+      type: 'object',
+      group: 'listing',
+      fieldset: 'claim',
+      description:
+        'Pending claim submitted from the site. Landing already PATCHes this object; Studio shows it for ops review. Not required.',
+      hidden: ({value}) => {
+        if (!value || typeof value !== 'object') return true
+        const request = value as {
+          fullName?: string
+          businessEmail?: string
+          contactNumber?: string
+          role?: string
+          notes?: string
+          submittedAt?: string
+        }
+        return ![
+          request.fullName,
+          request.businessEmail,
+          request.contactNumber,
+          request.role,
+          request.notes,
+          request.submittedAt,
+        ].some(Boolean)
+      },
+      fields: [
+        defineField({name: 'fullName', title: 'Full name', type: 'string'}),
+        defineField({name: 'businessEmail', title: 'Business email', type: 'string'}),
+        defineField({name: 'contactNumber', title: 'Contact number', type: 'string'}),
+        defineField({name: 'role', title: 'Role', type: 'string'}),
+        defineField({name: 'notes', title: 'Notes', type: 'text', rows: 3}),
+        defineField({name: 'submittedAt', title: 'Submitted at', type: 'datetime'}),
+      ],
+    }),
+    defineField({
       name: 'isVerified',
       title: 'Verified Hub (legacy)',
       type: 'boolean',
@@ -481,7 +530,7 @@ export default defineType({
       group: 'listing',
       description: 'Watch fixtures this venue is showing. Field names match site GROQ.',
       of: [
-        {
+        defineArrayMember({
           type: 'object',
           name: 'screening',
           title: 'Screening',
@@ -500,6 +549,13 @@ export default defineType({
               validation: (Rule) => Rule.required(),
             }),
             defineField({
+              name: 'fixtureSlug',
+              title: 'Fixture slug',
+              type: 'string',
+              description:
+                'Public `/events/[slug]` slug (e.g. springboks-vs-all-blacks-2026-09-06). Landing uses this to attach the screening to the fixture venue list. Not a CMS event reference.',
+            }),
+            defineField({
               name: 'setupTags',
               title: 'Setup tags',
               type: 'array',
@@ -509,15 +565,15 @@ export default defineType({
             }),
           ],
           preview: {
-            select: {title: 'title', startsAt: 'startsAt'},
-            prepare({title, startsAt}) {
+            select: {title: 'title', startsAt: 'startsAt', fixtureSlug: 'fixtureSlug'},
+            prepare({title, startsAt, fixtureSlug}) {
               return {
                 title: title || 'Screening',
-                subtitle: startsAt,
+                subtitle: [startsAt, fixtureSlug].filter(Boolean).join(' · '),
               }
             },
           },
-        },
+        }),
       ],
     }),
     defineField({
