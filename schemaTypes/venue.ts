@@ -1,8 +1,8 @@
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
 
 /**
  * Field names for site-facing data match landing-page GROQ in
- * `src/services/venueQuery.ts` (hero_image, phone, whatsapp, website, lat/lng,
+ * `src/services/venueQuery.ts` (hero_image, gallery, phone, whatsapp, website, lat/lng,
  * amenities, claim_status, upcoming_screenings, is_verified, rating, etc.).
  *
  * Watch = broadcasts (sports shown on screens).
@@ -68,6 +68,36 @@ export default defineType({
       options: {
         hotspot: true,
       },
+    }),
+    defineField({
+      name: 'gallery',
+      title: 'Gallery',
+      type: 'array',
+      group: 'overview',
+      description:
+        'Extra real venue photos (owner/Content supplied). Shown as a gallery on the venue page. Do not use stock.',
+      of: [
+        defineArrayMember({
+          type: 'image',
+          title: 'Photo',
+          options: {hotspot: true},
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+              validation: (Rule) => Rule.required().error('Alt text is required'),
+            }),
+            defineField({
+              name: 'credit',
+              title: 'Credit',
+              type: 'string',
+              description: "e.g. photographer or 'Photo: venue owner'",
+            }),
+          ],
+        }),
+      ],
+      validation: (Rule) => Rule.max(8),
     }),
     defineField({
       name: 'description',
